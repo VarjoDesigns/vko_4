@@ -25,8 +25,8 @@
 		<tr>
 			<th>Etunimi</th>
 			<th>Sukunimi</th>
-			<th>Sposti</th>
 			<th>Puhelin</th>
+			<th>Sähköposti</th>
 			<th></th>
 		</tr>		
 	</thead>
@@ -61,7 +61,7 @@ function haeTiedot(){
         	htmlStr+="<td>"+field.etunimi+"</td>";
         	htmlStr+="<td>"+field.sukunimi+"</td>";
         	htmlStr+="<td>"+field.puhelin+"</td>";
-        	htmlStr+="<td>"+field.sposti+"</td>";
+        	htmlStr+="<td>"+field.sahkoposti+"</td>";
         	htmlStr+="<td><button class='btn btn-danger' onclick=poista(" + field.asiakas_id + ") >Poista</button></td>"; 
         	htmlStr+="</tr>";
         	$("#listaus tbody").append(htmlStr);
