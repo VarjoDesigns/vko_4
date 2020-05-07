@@ -28,6 +28,7 @@
 			<th>Puhelin</th>
 			<th>Sähköposti</th>
 			<th></th>
+			<th></th>
 		</tr>		
 	</thead>
 	<tbody>
@@ -62,7 +63,8 @@ function haeTiedot(){
         	htmlStr+="<td>"+field.sukunimi+"</td>";
         	htmlStr+="<td>"+field.puhelin+"</td>";
         	htmlStr+="<td>"+field.sahkoposti+"</td>";
-        	htmlStr+="<td><button class='btn btn-danger' onclick=poista(" + field.asiakas_id + ") >Poista</button></td>"; 
+        	htmlStr+="<td><a class='btn btn-outline-primary' href='muutaasiakas.jsp?asiakas_id="+ field.asiakas_id +"'>Muuta</a></td>"; 
+        	htmlStr+="<td><button class='btn btn-outline-danger' onclick=poista(" + field.asiakas_id + ") >Poista</button></td>"; 
         	htmlStr+="</tr>";
         	$("#listaus tbody").append(htmlStr);
         });

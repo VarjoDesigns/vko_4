@@ -6,14 +6,14 @@
 <meta charset="ISO-8859-1">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
-<title>Lisää asiakas</title>
+<title>Muuta asiakas</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
 
 
 </head>
 <body>
-<h3 class="welcome container">Asiakkaan lisääminen</h3>
+<h3 class="welcome container">Asiakkaan muuttaminen</h3>
 
 <form id="tiedot" class="container">
 	<div class="form-group">
@@ -37,6 +37,7 @@
 	</div>
 	
 	<div class="form-group">
+		<input type="hidden" id="asiakas_id" name="asiakas_id">
 		<input type="submit" id="tallenna" value="Lisää asiakas" class="btn btn-outline-primary">
 		<a href="listaaAsiakkaat.jsp" type="button" id="peruuta" class="btn btn-outline-danger">Peruuta</a>
 	</div>
@@ -48,6 +49,15 @@
 
 // Ajetaan ensimmäisenä sivun ladatessa
 $(document).ready(function(){
+	var url_id = requestURLParam("asiakas_id");
+	$.getJSON({url:"asiakkaat/haeyksi/" + url_id, type:"GET", dataType:"json", success:function(result) {
+		$("#asiakas_id").val(result.asiakas_id);
+		$("#etunimi").val(result.etunimi);
+		$("#sukunimi").val(result.sukunimi);
+		$("#puhelin").val(result.puhelin);
+		$("#sahkoposti").val(result.sahkoposti);
+	}});
+	
 	$("#tiedot").validate({	
 		rules: {
 			etunimi: {
@@ -92,11 +102,22 @@ $(document).ready(function(){
 			},
 		},
 		submitHandler: function(form) {
-			lisaaTiedot();
+			paivitaTiedot();
 		}
 	}); 
 	$("etunimi").focus();
 });
+
+function requestURLParam(sParam){
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split("&");
+    for (var i = 0; i < sURLVariables.length; i++){
+        var sParameterName = sURLVariables[i].split("=");
+        if(sParameterName[0] == sParam){
+            return sParameterName[1];
+        }
+    }
+}
 
 function formDataJsonStr(formArray) {
 	var returnArray = {};
@@ -106,22 +127,22 @@ function formDataJsonStr(formArray) {
 	return JSON.stringify(returnArray);
 }
 
-function lisaaTiedot(){
+function paivitaTiedot(){
 	var formJsonStr = formDataJsonStr($("#tiedot").serializeArray());
 	console.log(formJsonStr);
 	
 	$.ajax({
 		url:"asiakkaat", 
 		data:formJsonStr, 
-		type:"POST", 
+		type:"PUT", 
 		dataType:"json", 
 		success:function(result) { 
 			
         if(result.response==0){
-        	$("#ilmo").html("Asiakkaan lisääminen epäonnistui");
-        }else if(result.response==1){			
+        	$("#ilmo").html("Asiakkaan päivittäminen epäonnistui");
+        }else if(result==1){			
+        	$("#ilmo").html("Asiakkaan päivittäminen onnistui");
         	$("#etunimi, #sukunimi, #puhelin, #sposti").val("");
-        	$("#ilmo").html("Asiakkaan lisääminen onnistui");
 		}
     }});	
 }
