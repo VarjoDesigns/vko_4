@@ -176,6 +176,24 @@ public class Dao {
 		}
 		return asiakas;
 	}
-
+	
+	public boolean poistaKaikkiAsiakkaat (String pwd) {
+		boolean paluuarvo = true;
+		if (pwd!="nimda") {
+			return false;
+		}
+		sql="DELETE FROM autot";
+		
+		try {
+			con = yhdista();
+				stmtPrep=con.prepareStatement(sql);
+				stmtPrep.executeQuery();
+				con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			paluuarvo = false;
+		}
+		return paluuarvo;
+	}
 }
 

@@ -140,9 +140,9 @@ function paivitaTiedot(){
 			
         if(result.response==0){
         	$("#ilmo").html("Asiakkaan päivittäminen epäonnistui");
-        }else if(result==1){			
+        }else if(result.response==1){			
         	$("#ilmo").html("Asiakkaan päivittäminen onnistui");
-        	$("#etunimi, #sukunimi, #puhelin, #sposti").val("");
+        	$("#etunimi, #sukunimi, #puhelin, #sahkoposti").val("");
 		}
     }});	
 }
