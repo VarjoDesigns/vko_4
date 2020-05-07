@@ -18,6 +18,7 @@
 	<input type="text" id="hakusana" class="form-control col-4">
 	</div>
 	<input type="button" id="hae" value="Hae" class="btn btn-outline-primary" style="margin-bottom: 20px;">
+	<input type="button" id="uusiAsiakas" value="Uusi asiakas" class="btn btn-outline-success" style="margin-bottom: 20px;">
 </form>
 <table id="listaus" class="container table table-striped">
 	<thead>
@@ -26,6 +27,7 @@
 			<th>Sukunimi</th>
 			<th>Sposti</th>
 			<th>Puhelin</th>
+			<th></th>
 		</tr>		
 	</thead>
 	<tbody>
@@ -33,67 +35,54 @@
 	</tbody>
 </table>
 <script>
-
-// Ajetaan ensimm‰isen‰ sivun ladatessa
-$(document).ready(function(){
-	
-	$.ajax({
-		url:"asiakkaat", 
-		type:"GET", 
-		dataType:"json", 
-		success:function(result) { // Palauttaa tiedot JSON-objektina "result" kohtaan
-			$.each(result.asiakkaat, function(i, field){
-				var htmlStr;
-	        	htmlStr+="<tr>"; 
-	        	htmlStr+="<td>"+field.etunimi+"</td>";
-	        	htmlStr+="<td>"+field.sukunimi+"</td>";
-	        	htmlStr+="<td>"+field.puhelin+"</td>";
-	        	htmlStr+="<td>"+field.sposti+"</td>";       	
-	        	htmlStr+="</tr>";
-	        	$("#listaus tbody").append(htmlStr);
-			});
-		}});
-	
-	// Vied‰‰n kursorin fokus hakukentt‰‰n
-	$("#hakusana").focus();
-	
-	// Jos painetaan Enter, haetaan tiedot
+$(document).ready(function(){	
 	$(document.body).on("keydown", function(event){
-		  if(event.which==13){ 
-			  haeAsiakkaat();
+		  if(event.which==13){ //Enteri‰ painettu, ajetaan haku
+			  haeTiedot();
 		  }
+	});	
+	$("#hae").click(function(){	
+		haeTiedot();
 	});
 	
+	$("#uusiAsiakas").click(function(){	
+		document.location="lisaaAsiakas.jsp";
+	});
 	
-	// K‰ytt‰j‰n painaessa "hae" nappia,suoritetaan "haeAsiakkaat" funktio
-	
-	$("#hae").click(function(){	
-		haeAsiakkaat();
-	}); 
+	$("#hakusana").focus();//vied‰‰n kursori hakusana-kentt‰‰n sivun latauksen yhteydess‰
+	haeTiedot();
 });
-
-function haeAsiakkaat(){
-	
-	// Tyhjennet‰‰n tiedot jottei tule tuplana
+function haeTiedot(){	
 	$("#listaus tbody").empty();
-	
-	$.ajax({
-		url:"asiakkaat", 
-		data:{
-			hakusana: $("#hakusana").val()}, 
-		success:function(result){	
+	$.getJSON({url:"asiakkaat/"+$("#hakusana").val(), type:"GET", dataType:"json", success:function(result){	
 		$.each(result.asiakkaat, function(i, field){  
         	var htmlStr;
         	htmlStr+="<tr>"; 
         	htmlStr+="<td>"+field.etunimi+"</td>";
         	htmlStr+="<td>"+field.sukunimi+"</td>";
         	htmlStr+="<td>"+field.puhelin+"</td>";
-        	htmlStr+="<td>"+field.sposti+"</td>";       	
+        	htmlStr+="<td>"+field.sposti+"</td>";
+        	htmlStr+="<td><button class='btn btn-danger' onclick=poista(" + field.asiakas_id + ") >Poista</button></td>"; 
         	htmlStr+="</tr>";
         	$("#listaus tbody").append(htmlStr);
         });
-    }});
-};
+    }});	
+}
+
+function poista(asiakas_id){
+	if(confirm("Haluatko varmasti poistaa asiakkaan " + asiakas_id + "?")){
+	console.log(asiakas_id);
+		$.ajax({url:"asiakkaat/" + asiakas_id, type:"DELETE", dataType:"json", success:function(result) {
+			if(result.response==0){
+				$("#ilmo").html("Asiakkaan poistaminen ep‰onnistui.");
+			} else if (result.response==1) {
+				$("#rivi_" + asiakas_id);
+				alert("Asiakkaan " + asiakas_id + "poistaminen onnistui.");
+				haeTiedot();
+			}
+		}});
+	}
+}
 </script>
 </body>
 </html>

@@ -1,7 +1,8 @@
 package model;
 
 public class Asiakas {
-	private String etunimi, sukunimi,  puhelin, sposti, sahkoposti;
+	private int asiakas_id;
+	private String etunimi, sukunimi,  puhelin, sahkoposti;
 
 	
 	public Asiakas() {
@@ -9,15 +10,18 @@ public class Asiakas {
 	}
 
 
-	public Asiakas(String etunimi, String sukunimi, String puhelin, String sposti, String sahkoposti) {
+	public Asiakas(int asiakas_id, String etunimi, String sukunimi, String puhelin, String sahkoposti) {
 		super();
+		this.asiakas_id = asiakas_id;
 		this.etunimi = etunimi;
 		this.sukunimi = sukunimi;
 		this.puhelin = puhelin;
-		this.sposti = sposti;
 		this.sahkoposti = sahkoposti;
 	}
 
+	public int getAsiakas_id() {
+		return asiakas_id;
+	}
 
 	public String getEtunimi() {
 		return etunimi;
@@ -34,16 +38,15 @@ public class Asiakas {
 	}
 
 
-	public String getSposti() {
-		return sposti;
-	}
-
-
 	public String getSahkoposti() {
 		return sahkoposti;
 	}
 
 
+	public void setAsiakas_id(int asiakas_id) {
+		this.asiakas_id = asiakas_id;
+	}
+	
 	public void setEtunimi(String etunimi) {
 		this.etunimi = etunimi;
 	}
@@ -59,11 +62,6 @@ public class Asiakas {
 	}
 
 
-	public void setSposti(String sposti) {
-		this.sposti = sposti;
-	}
-
-
 	public void setSahkoposti(String sahkoposti) {
 		this.sahkoposti = sahkoposti;
 	}
@@ -71,8 +69,8 @@ public class Asiakas {
 
 	@Override
 	public String toString() {
-		return "Asiakkaat [etunimi=" + etunimi + ", sukunimi=" + sukunimi + ", puhelin=" + puhelin + ", sposti="
-				+ sposti + ", sahkoposti=" + sahkoposti + "]";
+		return "Asiakas [asiakas_id=" + asiakas_id + ", etunimi=" + etunimi + ", sukunimi=" + sukunimi + ", puhelin="
+				+ puhelin + ", sahkoposti=" + sahkoposti + "]";
 	}
 	
 }
