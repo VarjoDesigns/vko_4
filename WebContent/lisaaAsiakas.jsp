@@ -4,12 +4,11 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+<!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script> -->
+<script src="scripts/main.js"></script>
 <title>Lisää asiakas</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-
 
 </head>
 <body>
@@ -37,7 +36,7 @@
 	</div>
 	
 	<div class="form-group">
-		<input type="submit" id="tallenna" value="Lisää asiakas" class="btn btn-outline-primary">
+		<input type="button" id="tallenna" name="nappi" value="Lisää asiakas" onclick="lisaaTiedot()" class="btn btn-outline-primary">
 		<a href="listaaAsiakkaat.jsp" type="button" id="peruuta" class="btn btn-outline-danger">Peruuta</a>
 	</div>
 </form>
@@ -45,8 +44,71 @@
 <span id="ilmo"></span>
 
 <script>
+function enterLahettaa(event){ // Mahdollistaa Enter-näppäimellä hakemisen
+	if(event.keyCode==13){
+		haeTiedot();
+	}
+}
+
+document.getElementById("etunimi").focus();
+
+function lisaaTiedot() {
+	console.log("haeTiedot()");
+	var ilmo = "";
+	if(document.getElementById("etunimi").value.length<3){
+		ilmo = "Virheellinen etunimi!";
+	}
+	if(document.getElementById("sukunimi").value.length<3){
+		ilmo = "Virheellinen sukunimi!";
+	}
+	if(document.getElementById("puhelin").value.length<3){
+		ilmo = "Virheellinen puhelinnumero!";
+	}
+	if(document.getElementById("sahkoposti").value.length<3){
+		ilmo = "Virheellinen sahkoposti!";
+	}
+	
+	if(ilmo!=""){
+		document.getElementById("ilmo").innerHTML = ilmo;
+		setTimeout(function(){document.getElementById("ilmo").innerHTML; }, 3000);
+		return;
+	}
+
+
+	var formJsonStr=formDataJsonStr(document.getElementById("tiedot")); 
+	
+	fetch("asiakkaat",{//Lähetetään kutsu backendiin
+	      method: 'POST',
+	      body:formJsonStr
+	    })
+	.then( function (response) {//Odotetaan vastausta ja muutetaan JSON-vastaus objektiksi		
+		return response.json()
+	})
+	.then( function (responseJson) {//Otetaan vastaan objekti responseJson-parametrissä	
+		var vastaus = responseJson.response;		
+		if(vastaus==0){
+			document.getElementById("ilmo").innerHTML= "Asiakkaa lisääminen epäonnistui";
+    	}else if(vastaus==1){	        	
+    		document.getElementById("ilmo").innerHTML= "Asiakkaa lisääminen onnistui";			      	
+		}
+		setTimeout(function(){ document.getElementById("ilmo").innerHTML=""; }, 5000);
+	});
+	document.getElementById("tiedot").reset();
+}
+
+function formDataJsonStr(formArray) {
+	var returnArray = {};
+	for (var i = 0; i < formArray.length; i++){
+		returnArray[formArray[i]['name']] = formArray[i]['value'];
+	}
+	return JSON.stringify(returnArray);
+}
+
+/* // Jquery versio
+
 
 // Ajetaan ensimmäisenä sivun ladatessa
+
 $(document).ready(function(){
 	$("#tiedot").validate({	
 		rules: {
@@ -124,7 +186,7 @@ function lisaaTiedot(){
         	$("#ilmo").html("Asiakkaan lisääminen onnistui");
 		}
     }});	
-}
+} */
 </script>
 </body>
 </html>
